@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cstring>
 #include <vector>
+#include <stdexcept>
 
 #define EPS 1e-07
 
@@ -13,10 +14,6 @@ class S21Matrix {
  private:
     std::vector<std::vector<double>> matrix_;
     int rows_, cols_;
-
-
-//   void cutMatrix(S21Matrix&, S21Matrix&, int&, int&);
-//   S21Matrix cut2Matrix(const int& i, const int& j);
 
  public:
 
@@ -30,7 +27,7 @@ class S21Matrix {
   int get_cols() const;
   void set_rows(int rows);
   void set_cols(int cols);
-  const double** getMatrix() const;
+  //const double** getMatrix() const;
 
   void createMatrix();
   void deleteMatrix();
@@ -57,7 +54,6 @@ class S21Matrix {
   S21Matrix& operator*=(const double num);
   S21Matrix operator*(const double num) const;
   bool operator==(const S21Matrix& other) const;
-
   double& operator()(const int row, const int col);
   const double& operator()(const int row, const int col) const;
 };
