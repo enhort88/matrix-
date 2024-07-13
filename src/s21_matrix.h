@@ -5,16 +5,16 @@
 #include <iostream> 
 #include <cmath>
 #include <cstring>
+#include <vector>
 
 #define EPS 1e-07
 
 class S21Matrix {
  private:
-  int rows_, cols_;
-  double** matrix_;
+    std::vector<std::vector<double>> matrix_;
+    int rows_, cols_;
 
-  void createMatrix();
-  void deleteMatrix();
+
 //   void cutMatrix(S21Matrix&, S21Matrix&, int&, int&);
 //   S21Matrix cut2Matrix(const int& i, const int& j);
 
@@ -26,12 +26,14 @@ class S21Matrix {
   S21Matrix(S21Matrix&& other);
   ~S21Matrix();
 
-  int getCols() const;
-  int getRows() const;
-  void setRows(int rows);
-  void setCols(int cols);
+  int get_rows() const;
+  int get_cols() const;
+  void set_rows(int rows);
+  void set_cols(int cols);
   const double** getMatrix() const;
 
+  void createMatrix();
+  void deleteMatrix();
   bool EqMatrix(const S21Matrix& other) const;
   void SumMatrix(const S21Matrix& other);
   void SubMatrix(const S21Matrix& other);
