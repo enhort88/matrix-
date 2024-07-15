@@ -28,10 +28,9 @@ class S21Matrix {
   void set_rows(int rows);
   void set_cols(int cols);
   //const double** getMatrix() const;
-
-  void createMatrix();
-  void deleteMatrix();
-  bool EqMatrix(const S21Matrix& other) const;
+//   void createMatrix();
+//   void deleteMatrix();
+  bool EqMatrix(const S21Matrix& other);
   void SumMatrix(const S21Matrix& other);
   void SubMatrix(const S21Matrix& other);
   void MulNumber(const double num);
@@ -53,9 +52,9 @@ class S21Matrix {
   S21Matrix operator*(const S21Matrix& other) ;
   S21Matrix& operator*=(const double num);
   S21Matrix operator*(const double num) ;
-  bool operator==(const S21Matrix& other) const;
+  bool operator==(const S21Matrix& other);
   double& operator()(const int row, const int col);
-  const double& operator()(const int row, const int col) const;
+  //const double& operator()(const int row, const int col) const;
 };
 std::ostream& operator<<(std::ostream& os, const S21Matrix& matrix);
 
