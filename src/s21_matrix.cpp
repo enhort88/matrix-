@@ -46,19 +46,19 @@ void S21Matrix::set_cols(int cols) {
 }
 
 // Операции с матрицами
-S21Matrix S21Matrix::operator+(const S21Matrix& other) const {
-    S21Matrix result(*this);
+S21Matrix S21Matrix::operator+(const S21Matrix& other) {
+    S21Matrix result (*this);
     result.SumMatrix(other);
     return result;
 }
 
-S21Matrix S21Matrix::operator-(const S21Matrix& other) const {
-    S21Matrix result(*this);
+S21Matrix S21Matrix::operator-(const S21Matrix& other) {
+    S21Matrix result (*this);
     result.SubMatrix(other);
     return result;
 }
 
-S21Matrix S21Matrix::operator*(const S21Matrix& other) const {
+S21Matrix S21Matrix::operator*(const S21Matrix& other)  {
     if (cols_ != other.rows_) {
         throw std::invalid_argument("Matrices dimensions do not match for multiplication.");
     }
@@ -73,7 +73,7 @@ S21Matrix S21Matrix::operator*(const S21Matrix& other) const {
     return result;
 }
 
-S21Matrix S21Matrix::operator*(double num) const {
+S21Matrix S21Matrix::operator*(double num) {
     S21Matrix result(*this);
     result.MulNumber(num);
     return result;
@@ -83,6 +83,16 @@ bool S21Matrix::operator==(const S21Matrix& other) const {
     return (rows_ == other.rows_) && (cols_ == other.cols_) && (matrix_ == other.matrix_);
 }
 
+S21Matrix& S21Matrix::operator=(S21Matrix&& other) {
+    if (this != &other) {
+        rows_ = other.rows_;
+        cols_ = other.cols_;
+        matrix_ = std::move(other.matrix_);
+        other.rows_ = 0;
+        other.cols_ = 0;
+    }
+    return *this;
+}
 S21Matrix& S21Matrix::operator=(const S21Matrix& other) {
     if (this != &other) {
         rows_ = other.rows_;
@@ -125,7 +135,6 @@ const double& S21Matrix::operator()(int i, int j) const {
     }
     return matrix_[i][j];
 }
-
 // Вспомогательные функции
 void S21Matrix::SumMatrix(const S21Matrix& other) {
     if (rows_ != other.rows_ || cols_ != other.cols_) {
@@ -161,3 +170,15 @@ void S21Matrix::MulNumber(double num) {
     }
 }
 
+int main(){
+    S21Matrix p(1,1);
+    
+    p(0,0) = 15;
+    std::cout <<"p " << p(0,0) << std::endl;
+    // S21Matrix o(p); 
+    // std::cout << "o "<<o(0,0) << std::endl;
+    // p(1,1) = 18;
+    //  std::cout <<"p2 " << p(0,0) << std::endl;
+    // std::cout << "o2 "<<o(0,0) << std::endl;
+
+}

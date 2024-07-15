@@ -35,7 +35,7 @@ class S21Matrix {
   void SumMatrix(const S21Matrix& other);
   void SubMatrix(const S21Matrix& other);
   void MulNumber(const double num);
-  void MulMatrix(const S21Matrix& other);
+  void MulMatrix(const S21Matrix& other) ;
 
   S21Matrix Transpose();
   S21Matrix CalcComplements();
@@ -46,13 +46,13 @@ class S21Matrix {
   S21Matrix& operator=(S21Matrix&& other);
   S21Matrix& operator=(const S21Matrix& other);
   S21Matrix& operator+=(const S21Matrix& other);
-  S21Matrix operator+(const S21Matrix& other) const;
+  S21Matrix operator+(const S21Matrix& other) ;
   S21Matrix& operator-=(const S21Matrix& other);
-  S21Matrix operator-(const S21Matrix& other) const;
-  S21Matrix& operator*=(const S21Matrix& other);
-  S21Matrix operator*(const S21Matrix& other) const;
+  S21Matrix operator-(const S21Matrix& other) ;
+  S21Matrix& operator*=(const S21Matrix& other) ;
+  S21Matrix operator*(const S21Matrix& other) ;
   S21Matrix& operator*=(const double num);
-  S21Matrix operator*(const double num) const;
+  S21Matrix operator*(const double num) ;
   bool operator==(const S21Matrix& other) const;
   double& operator()(const int row, const int col);
   const double& operator()(const int row, const int col) const;
