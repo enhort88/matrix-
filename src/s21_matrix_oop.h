@@ -10,11 +10,11 @@
 #define EPS 1e-07
 
 class S21Matrix {
-private:
+ private:
   int rows_, cols_;
   std::vector<std::vector<double>> matrix_;
 
-public:
+ public:
   S21Matrix();
   S21Matrix(int rows, int columns);
   S21Matrix(const S21Matrix &other);
@@ -56,4 +56,4 @@ public:
 };
 std::ostream &operator<<(std::ostream &os, const S21Matrix &matrix);
 
-#endif // S21_MATRIX_PLUS
+#endif  // S21_MATRIX_PLUS

@@ -5,7 +5,7 @@ CC=gcc -Wall -Werror -Wextra
 CFLAGS= -x c++ -std=c++17 #-D_POSIX_C_SOURCE=200809L
 BINFLD=.
 BINTESTFLD=./matrix_oop
-LDLIBS = -lstdc++
+LDLIBS = -lstdc++ -lm
 # LDTESTLIBS = -lm $(LDLIBS)
 
 CPP_FILES := $(shell find . -name "*.cpp")
