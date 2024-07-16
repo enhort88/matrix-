@@ -19,13 +19,13 @@ int main() {
 
     std::cout << "Minor matrix:\n";
     minor.print();
-    std::cout << "Determinante matrix: " << mat.Determinant()<< std::endl;
+    std::cout << "Determinante matrix: " << mat.Determinant() << std::endl;
 
     S21Matrix complements = mat.CalcComplements();
-        std::cout << "Complements matrix:\n";
-        complements.print();
+    std::cout << "Complements matrix:\n";
+    complements.print();
 
-S21Matrix mat1(3, 3);
+    S21Matrix mat1(3, 3);
     mat1(0, 0) = 2;
     mat1(0, 1) = 3;
     mat1(0, 2) = 1;
@@ -59,9 +59,9 @@ S21Matrix mat1(3, 3);
     std::cout << "Original matrix:\n";
     mat2.print();
 
-   S21Matrix inverse = mat2.InverseMatrix();
-        std::cout << "Inverse matrix:\n";
-        inverse.print();
+    S21Matrix inverse = mat2.InverseMatrix();
+    std::cout << "Inverse matrix:\n";
+    inverse.print();
   } catch (const MatrixException &err) {
     std::cerr << "\nMatrix Exception: " << err.what() << std::endl;
   }

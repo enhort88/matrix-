@@ -49,12 +49,12 @@ void S21Matrix::set_cols(int cols) {
 }
 
 void S21Matrix::print() const {
-    for (int i = 0; i < rows_; ++i) {
-        for (int j = 0; j < cols_; ++j) {
-            std::cout << matrix_[i][j] << " ";
-        }
-        std::cout << std::endl;
+  for (int i = 0; i < rows_; ++i) {
+    for (int j = 0; j < cols_; ++j) {
+      std::cout << matrix_[i][j] << " ";
     }
+    std::cout << std::endl;
+  }
 }
 
 // Операции с матрицами
@@ -141,22 +141,23 @@ double &S21Matrix::operator()(int i, int j) {
 // Вспомогательные функции
 void S21Matrix::isCorrect(const S21Matrix &other) {
   if (other.matrix_.empty()) throw MatrixException("Matrix is empty");
-  if (!other.rows_ || !other.cols_) throw MatrixException("Matrix is incorect. Problem with rows/cols");
+  if (!other.rows_ || !other.cols_)
+    throw MatrixException("Matrix is incorect. Problem with rows/cols");
 }
 
 bool S21Matrix::EqMatrix(const S21Matrix &other) {
-    bool result = true;
-    try {
+  bool result = true;
+  try {
     isCorrect(*this);
     if (rows_ != other.rows_ || cols_ != other.cols_) {
-        result = false;
+      result = false;
     }
     for (int i = 0; i < rows_; ++i) {
-        for (int j = 0; j < cols_; ++j) {
-            if (std::fabs(matrix_[i][j] - other.matrix_[i][j]) > EPS) {
-                result = false;
-            }
+      for (int j = 0; j < cols_; ++j) {
+        if (std::fabs(matrix_[i][j] - other.matrix_[i][j]) > EPS) {
+          result = false;
         }
+      }
     }
   } catch (MatrixException &e) {
     e.addMessage("EqMatrix");
@@ -211,92 +212,82 @@ void S21Matrix::MulNumber(double num) {
     for (int j = 0; j < cols_; ++j) matrix_[i][j] *= num;
 }
 
-void S21Matrix::Minor(S21Matrix& minor, int r, int c) const {
-    if (rows_ <= 1 || cols_ <= 1) {
-        throw MatrixException("Matrix dimensions must be greater than 1 for minors.");
-    }
-    int m = rows_ - 1;
-    int n = cols_ - 1;
+void S21Matrix::Minor(S21Matrix &minor, int r, int c) const {
+  if (rows_ <= 1 || cols_ <= 1)
+    throw MatrixException(
+        "Matrix dimensions must be greater than 1 for minors.");
 
-    minor.set_rows(m);
-    minor.set_cols(n);
+  int m = rows_ - 1;
+  int n = cols_ - 1;
+  minor.set_rows(m);
+  minor.set_cols(n);
+  for (int i = 0, x = 0; i < m; i++, x++) {
+    if (x == r) x++;
+    for (int j = 0, y = 0; j < n; j++, y++) {
+      if (y == c) y++;
 
-    for (int i = 0, x = 0; i < m; i++, x++) {
-        if (x == r) {
-            x++;
-        }
-        for (int j = 0, y = 0; j < n; j++, y++) {
-            if (y == c) {
-                y++;
-            }
-            minor(i, j) = matrix_[x][y];
-        }
+      minor(i, j) = matrix_[x][y];
     }
+  }
 }
 
 double S21Matrix::Determinant() {
-    if (rows_ != cols_) {
-        throw MatrixException("Matrix must be square to compute determinant.");
-    }
-    if (rows_ == 1) {
-        return matrix_[0][0];
-    } else if (rows_ == 2) {
-        return matrix_[0][0] * matrix_[1][1] - matrix_[0][1] * matrix_[1][0];
-    } else {
-        double result = 0.0;
-        for (int i = 0; i < cols_; ++i) {
-            S21Matrix minor(rows_ - 1, cols_ - 1);
-            Minor(minor, 0, i);
-            result += matrix_[0][i] * minor.Determinant() * (i % 2 == 0 ? 1 : -1);
-        }
-      return result;
-    }
-}
- S21Matrix S21Matrix::CalcComplements(){
-    if (rows_ != cols_) {
-        throw MatrixException("Matrix must be square to compute complements.");
-    }
-    S21Matrix result(rows_, cols_);
-    if (rows_ == 1) {
-        result(0, 0) = 1;
-    } else {
-        for (int i = 0; i < rows_; ++i) {
-            for (int j = 0; j < cols_; ++j) {
-                S21Matrix minor(rows_ - 1, cols_ - 1);
-                Minor(minor, i, j);
-                double det = minor.Determinant();
-                result(i, j) = std::pow(-1, i + j) * det;
-            }
-        }
+  double result = 0.0;
+  if (rows_ != cols_)
+    throw MatrixException("Matrix must be square to compute determinant.");
+
+  if (rows_ == 1) {
+    return matrix_[0][0];
+  } else if (rows_ == 2) {
+    return matrix_[0][0] * matrix_[1][1] - matrix_[0][1] * matrix_[1][0];
+  } else {
+    for (int i = 0; i < cols_; ++i) {
+      S21Matrix minor(rows_ - 1, cols_ - 1);
+      Minor(minor, 0, i);
+      result += matrix_[0][i] * minor.Determinant() * (i % 2 == 0 ? 1 : -1);
     }
     return result;
+  }
+}
+S21Matrix S21Matrix::CalcComplements() {
+  if (rows_ != cols_) {
+    throw MatrixException("Matrix must be square to compute complements.");
+  }
+  S21Matrix result(rows_, cols_);
+  if (rows_ == 1) {
+    result(0, 0) = 1;
+  } else {
+    for (int i = 0; i < rows_; ++i) {
+      for (int j = 0; j < cols_; ++j) {
+        S21Matrix minor(rows_ - 1, cols_ - 1);
+        Minor(minor, i, j);
+        double det = minor.Determinant();
+        result(i, j) = std::pow(-1, i + j) * det;
+      }
+    }
+  }
+  return result;
 }
 S21Matrix S21Matrix::Transpose() {
-    S21Matrix result(cols_, rows_);
-    for (int i = 0; i < rows_; ++i) {
-        for (int j = 0; j < cols_; ++j) {
-            result(j, i) = matrix_[i][j]; 
-        }
+  S21Matrix result(cols_, rows_);
+  for (int i = 0; i < rows_; ++i) {
+    for (int j = 0; j < cols_; ++j) {
+      result(j, i) = matrix_[i][j];
     }
-    return result;
+  }
+  return result;
 }
 S21Matrix S21Matrix::InverseMatrix() {
-    if (rows_ != cols_) {
-        throw MatrixException("Matrix must be square to compute the inverse.");
-    }
-    double det = Determinant();
-    if (fabs(det) < 1e-7) {
-        throw MatrixException("Matrix determinant is zero, the matrix is not invertible.");
-    }
-    S21Matrix complements = CalcComplements();
-    S21Matrix transposed = complements.Transpose();
-    S21Matrix inverse = transposed * (1.0 / det);
-    return inverse;
+  if (rows_ != cols_) {
+    throw MatrixException("Matrix must be square to compute the inverse.");
+  }
+  double det = Determinant();
+  if (fabs(det) < 1e-7) {
+    throw MatrixException(
+        "Matrix determinant is zero, the matrix is not invertible.");
+  }
+  S21Matrix complements = CalcComplements();
+  S21Matrix transposed = complements.Transpose();
+  S21Matrix inverse = transposed * (1.0 / det);
+  return inverse;
 }
-
-
-
-
-
-
-

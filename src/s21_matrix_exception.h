@@ -1,9 +1,8 @@
 #ifndef S21_MATRIX_EXCEP
 #define S21_MATRIX_EXCEP
 
-//#include <iostream> 
+//#include <iostream>
 #include <sstream>
-
 
 class MatrixException : public std::exception {
  private:
@@ -15,4 +14,4 @@ class MatrixException : public std::exception {
   const char* what() const noexcept override;
 };
 
-#endif // S21_MATRIX_EXCEP
+#endif  // S21_MATRIX_EXCEP

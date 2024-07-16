@@ -1,22 +1,20 @@
 #ifndef S21_MATRIX_PLUS
 #define S21_MATRIX_PLUS
 
-
-#include <iostream> 
 #include <cmath>
 #include <cstring>
-#include <vector>
+#include <iostream>
 #include <stdexcept>
+#include <vector>
 
 #define EPS 1e-07
 
 class S21Matrix {
  private:
-    std::vector<std::vector<double>> matrix_;
-    int rows_, cols_;
+  std::vector<std::vector<double>> matrix_;
+  int rows_, cols_;
 
  public:
-
   S21Matrix();
   S21Matrix(int rows, int columns);
   S21Matrix(const S21Matrix& other);
@@ -34,7 +32,7 @@ class S21Matrix {
   void SubMatrix(const S21Matrix& other);
   void MulNumber(const double num);
   void MulMatrix(const S21Matrix& other);
-  
+
   void isCorrect(const S21Matrix& other);
 
   void Minor(S21Matrix& minor, int r, int c) const;
@@ -46,13 +44,13 @@ class S21Matrix {
   S21Matrix& operator=(S21Matrix&& other);
   S21Matrix& operator=(const S21Matrix& other);
   S21Matrix& operator+=(const S21Matrix& other);
-  S21Matrix operator+(const S21Matrix& other) ;
+  S21Matrix operator+(const S21Matrix& other);
   S21Matrix& operator-=(const S21Matrix& other);
-  S21Matrix operator-(const S21Matrix& other) ;
-  S21Matrix& operator*=(const S21Matrix& other) ;
-  S21Matrix operator*(const S21Matrix& other) ;
+  S21Matrix operator-(const S21Matrix& other);
+  S21Matrix& operator*=(const S21Matrix& other);
+  S21Matrix operator*(const S21Matrix& other);
   S21Matrix& operator*=(const double num);
-  S21Matrix operator*(const double num) ;
+  S21Matrix operator*(const double num);
   bool operator==(const S21Matrix& other);
   double& operator()(const int row, const int col);
 };
