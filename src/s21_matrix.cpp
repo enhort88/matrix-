@@ -48,6 +48,15 @@ void S21Matrix::set_cols(int cols) {
   }
 }
 
+void S21Matrix::print() const {
+    for (int i = 0; i < rows_; ++i) {
+        for (int j = 0; j < cols_; ++j) {
+            std::cout << matrix_[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 // Операции с матрицами
 S21Matrix S21Matrix::operator+(const S21Matrix &other) {
   S21Matrix result(*this);
@@ -193,22 +202,73 @@ void S21Matrix::MulNumber(double num) {
   for (int i = 0; i < rows_; ++i)
     for (int j = 0; j < cols_; ++j) matrix_[i][j] *= num;
 }
-double S21Matrix::Determinant() {
-  double result = 0;
-  try {
-    isCorrect(*this);
-    if (rows_ != cols_)
-      throw MatrixException("Wrong matrix");
-    else if (rows_ == 1)
-      result = matrix_[0][0];
-    else if (rows_ == 2)
-      result = matrix_[0][0] * matrix_[1][1] - matrix_[0][1] * matrix_[1][0];
-    else {
-      // todo
-    }
-  } catch (MatrixException &e) {
-    e.addMessage("Determinante");
-  }
 
-  return result;
+void S21Matrix::Minor(S21Matrix& minor, int r, int c) const {
+    if (rows_ <= 1 || cols_ <= 1) {
+        throw MatrixException("Matrix dimensions must be greater than 1 for minors.");
+    }
+    int m = rows_ - 1;
+    int n = cols_ - 1;
+
+    minor.set_rows(m);
+    minor.set_cols(n);
+
+    for (int i = 0, x = 0; i < m; i++, x++) {
+        if (x == r) {
+            x++;
+        }
+        for (int j = 0, y = 0; j < n; j++, y++) {
+            if (y == c) {
+                y++;
+            }
+            minor(i, j) = matrix_[x][y];
+        }
+    }
 }
+
+double S21Matrix::Determinant() {
+    if (rows_ != cols_) {
+        throw MatrixException("Matrix must be square to compute determinant.");
+    }
+    if (rows_ == 1) {
+        return matrix_[0][0];
+    } else if (rows_ == 2) {
+        return matrix_[0][0] * matrix_[1][1] - matrix_[0][1] * matrix_[1][0];
+    } else {
+        double result = 0.0;
+        for (int i = 0; i < cols_; ++i) {
+            S21Matrix minor(rows_ - 1, cols_ - 1);
+            Minor(minor, 0, i);
+            result += matrix_[0][i] * minor.Determinant() * (i % 2 == 0 ? 1 : -1);
+        }
+      return result;
+    }
+}
+ S21Matrix S21Matrix::CalcComplements(){
+    if (rows_ != cols_) {
+        throw MatrixException("Matrix must be square to compute complements.");
+    }
+
+    S21Matrix result(rows_, cols_);
+
+    if (rows_ == 1) {
+        result(0, 0) = 1;
+    } else {
+        for (int i = 0; i < rows_; ++i) {
+            for (int j = 0; j < cols_; ++j) {
+                S21Matrix minor(rows_ - 1, cols_ - 1);
+                Minor(minor, i, j);
+                double det = minor.Determinant();
+                result(i, j) = pow(-1, i + j) * det;
+            }
+        }
+    }
+
+    return result;
+}
+
+
+
+
+
+

@@ -3,13 +3,29 @@
 
 int main() {
   try {
-    S21Matrix p1(1, 1);
-    S21Matrix p2(1, 1);
+    S21Matrix mat(3, 3);
+    mat(0, 0) = 2;
+    mat(0, 1) = 3;
+    mat(0, 2) = 1;
+    mat(1, 0) = 4;
+    mat(1, 1) = 5;
+    mat(1, 2) = 7;
+    mat(2, 0) = 6;
+    mat(2, 1) = 8;
+    mat(2, 2) = 9;
 
-    p1(0, 0) = 15;
-    p2(0, 0) = 15;
+    S21Matrix minor(2, 2);
+    mat.Minor(minor, 1, 1);
 
-    std::cout << "p " << p1(1, 1) << std::endl;
+    std::cout << "Minor matrix:\n";
+    minor.print();
+    std::cout << "Determinante matrix: " << mat.Determinant()<< std::endl;
+
+    S21Matrix complements = mat.CalcComplements();
+        std::cout << "Complements matrix:\n";
+        complements.print();
+
+
   } catch (const MatrixException &err) {
     std::cerr << "\nMatrix Exception: " << err.what() << std::endl;
   }

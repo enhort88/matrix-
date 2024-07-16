@@ -27,6 +27,7 @@ class S21Matrix {
   int get_cols() const;
   void set_rows(int rows);
   void set_cols(int cols);
+  void print() const;
 
   bool EqMatrix(const S21Matrix& other);
   void SumMatrix(const S21Matrix& other);
@@ -37,9 +38,10 @@ class S21Matrix {
   void isCorrect(const S21Matrix& other);
 
   S21Matrix Transpose();
-  S21Matrix CalcComplements();
   S21Matrix InverseMatrix();
+  void Minor(S21Matrix& minor, int r, int c) const;
   double Determinant();
+  S21Matrix CalcComplements();
 
   S21Matrix& operator=(S21Matrix&& other);
   S21Matrix& operator=(const S21Matrix& other);
