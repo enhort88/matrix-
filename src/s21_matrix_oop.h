@@ -37,11 +37,11 @@ class S21Matrix {
   
   void isCorrect(const S21Matrix& other);
 
-  S21Matrix Transpose();
-  S21Matrix InverseMatrix();
   void Minor(S21Matrix& minor, int r, int c) const;
   double Determinant();
   S21Matrix CalcComplements();
+  S21Matrix Transpose();
+  S21Matrix InverseMatrix();
 
   S21Matrix& operator=(S21Matrix&& other);
   S21Matrix& operator=(const S21Matrix& other);

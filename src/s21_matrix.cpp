@@ -265,7 +265,7 @@ double S21Matrix::Determinant() {
                 S21Matrix minor(rows_ - 1, cols_ - 1);
                 Minor(minor, i, j);
                 double det = minor.Determinant();
-                result(i, j) = pow(-1, i + j) * det;
+                result(i, j) = std::pow(-1, i + j) * det;
             }
         }
     }
@@ -279,6 +279,19 @@ S21Matrix S21Matrix::Transpose() {
         }
     }
     return result;
+}
+S21Matrix S21Matrix::InverseMatrix() {
+    if (rows_ != cols_) {
+        throw MatrixException("Matrix must be square to compute the inverse.");
+    }
+    double det = Determinant();
+    if (fabs(det) < 1e-7) {
+        throw MatrixException("Matrix determinant is zero, the matrix is not invertible.");
+    }
+    S21Matrix complements = CalcComplements();
+    S21Matrix transposed = complements.Transpose();
+    S21Matrix inverse = transposed * (1.0 / det);
+    return inverse;
 }
 
 
