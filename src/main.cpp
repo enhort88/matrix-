@@ -2,6 +2,7 @@
 #include "s21_matrix_oop.h"
 
 int main() {
+  int res = 0;
   try {
     S21Matrix mat(3, 3);
     mat(0, 0) = 2;
@@ -63,12 +64,15 @@ int main() {
     std::cout << "Inverse matrix:\n";
     inverse.print();
   } catch (const MatrixException &err) {
+    res = 11;
     std::cerr << "\nMatrix Exception: " << err.what() << std::endl;
+  } catch (const std::exception &err) {
+    res = 22;
+    std::cerr << "\nMatrix Exception: " << err.what() << std::endl;
+  } catch (...) {
+    res = 99;
+    std::cerr << "\nMatrix Exception: "
+              << "Unknown Error" << std::endl;
   }
-  // S21Matrix o(p);
-  // std::cout << "o "<<o(0,0) << std::endl;
-  // p(1,1) = 18;
-  //  std::cout <<"p2 " << p(0,0) << std::endl;
-  // std::cout << "o2 "<<o(0,0) << std::endl;
-  return 0;
+  return res;
 }
