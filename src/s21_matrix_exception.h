@@ -5,13 +5,13 @@
 #include <sstream>
 
 class MatrixException : public std::exception {
- private:
+private:
   std::string message_;
 
- public:
-  explicit MatrixException(const std::string& message);
-  void addMessage(const std::string& additionalMessage);
-  const char* what() const noexcept override;
+public:
+  explicit MatrixException(const std::string &message);
+  void addMessage(const std::string &additionalMessage);
+  const char *what() const noexcept override;
 };
 
-#endif  // S21_MATRIX_EXCEP
+#endif // S21_MATRIX_EXCEP

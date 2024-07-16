@@ -14,8 +14,7 @@ S21Matrix::S21Matrix(const S21Matrix &other)
     : rows_(other.rows_), cols_(other.cols_), matrix_(other.matrix_) {}
 
 S21Matrix::S21Matrix(S21Matrix &&other)
-    : rows_(other.rows_),
-      cols_(other.cols_),
+    : rows_(other.rows_), cols_(other.cols_),
       matrix_(std::move(other.matrix_)) {
   other.rows_ = 0;
   other.cols_ = 0;
@@ -205,7 +204,8 @@ double &S21Matrix::operator()(int i, int j) {
 
 // Вспомогательные функции
 void S21Matrix::isCorrect(const S21Matrix &other) {
-  if (other.matrix_.empty()) throw MatrixException("Matrix is empty");
+  if (other.matrix_.empty())
+    throw MatrixException("Matrix is empty");
   if (other.rows_ < 0 || other.cols_ < 0)
     throw MatrixException("Matrix is incorect. Problem with rows/cols");
 }
@@ -214,7 +214,8 @@ bool S21Matrix::EqMatrix(const S21Matrix &other) {
   bool result = true;
   try {
     isCorrect(*this);
-    if (rows_ != other.rows_ || cols_ != other.cols_) result = false;
+    if (rows_ != other.rows_ || cols_ != other.cols_)
+      result = false;
     for (int i = 0; i < rows_; ++i)
       for (int j = 0; j < cols_; ++j)
         if (std::fabs(matrix_[i][j] - other.matrix_[i][j]) > EPS)
@@ -280,7 +281,8 @@ void S21Matrix::MulNumber(double num) {
     throw;
   }
   for (int i = 0; i < rows_; ++i)
-    for (int j = 0; j < cols_; ++j) matrix_[i][j] *= num;
+    for (int j = 0; j < cols_; ++j)
+      matrix_[i][j] *= num;
 }
 
 void S21Matrix::Minor(S21Matrix &minor, int r, int c) {
@@ -298,9 +300,11 @@ void S21Matrix::Minor(S21Matrix &minor, int r, int c) {
   minor.set_rows(m);
   minor.set_cols(n);
   for (int i = 0, x = 0; i < m; i++, x++) {
-    if (x == r) x++;
+    if (x == r)
+      x++;
     for (int j = 0, y = 0; j < n; j++, y++) {
-      if (y == c) y++;
+      if (y == c)
+        y++;
       minor(i, j) = matrix_[x][y];
     }
   }
