@@ -145,11 +145,19 @@ void S21Matrix::isCorrect(const S21Matrix &other) {
 }
 
 bool S21Matrix::EqMatrix(const S21Matrix &other) {
-    bool result = false;
+    bool result = true;
     try {
     isCorrect(*this);
-    result  = (rows_ == other.rows_) && (cols_ == other.cols_) &&
-         (matrix_ == other.matrix_);
+    if (rows_ != other.rows_ || cols_ != other.cols_) {
+        result = false;
+    }
+    for (int i = 0; i < rows_; ++i) {
+        for (int j = 0; j < cols_; ++j) {
+            if (std::fabs(matrix_[i][j] - other.matrix_[i][j]) > EPS) {
+                result = false;
+            }
+        }
+    }
   } catch (MatrixException &e) {
     e.addMessage("EqMatrix");
   }
@@ -248,9 +256,7 @@ double S21Matrix::Determinant() {
     if (rows_ != cols_) {
         throw MatrixException("Matrix must be square to compute complements.");
     }
-
     S21Matrix result(rows_, cols_);
-
     if (rows_ == 1) {
         result(0, 0) = 1;
     } else {
@@ -263,9 +269,18 @@ double S21Matrix::Determinant() {
             }
         }
     }
-
     return result;
 }
+S21Matrix S21Matrix::Transpose() {
+    S21Matrix result(cols_, rows_);
+    for (int i = 0; i < rows_; ++i) {
+        for (int j = 0; j < cols_; ++j) {
+            result(j, i) = matrix_[i][j]; 
+        }
+    }
+    return result;
+}
+
 
 
 
