@@ -58,32 +58,37 @@ void S21Matrix::print() const {
 
 // Операции с матрицами
 S21Matrix S21Matrix::operator+(const S21Matrix &other) {
+  S21Matrix result(*this);
   try {
     isCorrect(*this);
+    isCorrect(other);
+    result.SumMatrix(other);
   } catch (MatrixException &e) {
     e.addMessage("Operator +");
     throw;
   }
-  S21Matrix result(*this);
-  result.SumMatrix(other);
   return result;
 }
 
 S21Matrix S21Matrix::operator-(const S21Matrix &other) {
+  S21Matrix result(*this);
   try {
     isCorrect(*this);
+    isCorrect(other);
+    result.SubMatrix(other);
   } catch (MatrixException &e) {
     e.addMessage("Operator -");
     throw;
   }
-  S21Matrix result(*this);
-  result.SubMatrix(other);
   return result;
 }
 
 S21Matrix S21Matrix::operator*(const S21Matrix &other) {
+  S21Matrix result(*this);
   try {
     isCorrect(*this);
+    isCorrect(other);
+    result.MulMatrix(other);
   } catch (MatrixException &e) {
     e.addMessage("Operator * (matrix)");
     throw;
@@ -92,24 +97,23 @@ S21Matrix S21Matrix::operator*(const S21Matrix &other) {
     throw MatrixException(
         "Matrices dimensions do not match for multiplication.");
   }
-  S21Matrix result(rows_, other.cols_);
-  S21Matrix temp(other);
-  for (int i = 0; i < rows_; ++i)
-    for (int j = 0; j < other.cols_; ++j)
-      for (int k = 0; k < cols_; ++k)
-        result(i, j) += matrix_[i][k] * temp(k, j);
+  // S21Matrix temp(other);
+  // for (int i = 0; i < rows_; ++i)
+  //   for (int j = 0; j < other.cols_; ++j)
+  //     for (int k = 0; k < cols_; ++k)
+  //       result(i, j) += matrix_[i][k] * temp(k, j);
   return result;
 }
 
 S21Matrix S21Matrix::operator*(double num) {
+  S21Matrix result(*this);
   try {
     isCorrect(*this);
+    result.MulNumber(num);
   } catch (MatrixException &e) {
     e.addMessage("Operator * (num)");
     throw;
   }
-  S21Matrix result(*this);
-  result.MulNumber(num);
   return result;
 }
 
@@ -118,30 +122,32 @@ bool S21Matrix::operator==(const S21Matrix &other) { return EqMatrix(other); }
 S21Matrix &S21Matrix::operator=(S21Matrix &&other) {
   try {
     isCorrect(*this);
+    isCorrect(other);
+    if (this != &other) {
+      rows_ = other.rows_;
+      cols_ = other.cols_;
+      matrix_ = std::move(other.matrix_);
+      other.rows_ = 0;
+      other.cols_ = 0;
+    }
   } catch (MatrixException &e) {
     e.addMessage("Operator = (move)");
     throw;
-  }
-  if (this != &other) {
-    rows_ = other.rows_;
-    cols_ = other.cols_;
-    matrix_ = std::move(other.matrix_);
-    other.rows_ = 0;
-    other.cols_ = 0;
   }
   return *this;
 }
 S21Matrix &S21Matrix::operator=(const S21Matrix &other) {
   try {
     isCorrect(*this);
+    isCorrect(other);
+    if (this != &other) {
+      rows_ = other.rows_;
+      cols_ = other.cols_;
+      matrix_ = other.matrix_;
+    }
   } catch (MatrixException &e) {
     e.addMessage("Operator = (copy)");
     throw;
-  }
-  if (this != &other) {
-    rows_ = other.rows_;
-    cols_ = other.cols_;
-    matrix_ = other.matrix_;
   }
   return *this;
 }
@@ -149,44 +155,50 @@ S21Matrix &S21Matrix::operator=(const S21Matrix &other) {
 S21Matrix &S21Matrix::operator+=(const S21Matrix &other) {
   try {
     isCorrect(*this);
+    isCorrect(other);
+    SumMatrix(other);
   } catch (MatrixException &e) {
     e.addMessage("Operator +=");
     throw;
   }
-  SumMatrix(other);
+
   return *this;
 }
 
 S21Matrix &S21Matrix::operator-=(const S21Matrix &other) {
   try {
     isCorrect(*this);
+    isCorrect(other);
+    SubMatrix(other);
+
   } catch (MatrixException &e) {
     e.addMessage("Operator -=");
     throw;
   }
-  SubMatrix(other);
   return *this;
 }
 
 S21Matrix &S21Matrix::operator*=(const S21Matrix &other) {
   try {
     isCorrect(*this);
+    isCorrect(other);
+    *this = *this * other;
   } catch (MatrixException &e) {
     e.addMessage("Operator *= (matrix)");
     throw;
   }
-  *this = *this * other;
   return *this;
 }
 
 S21Matrix &S21Matrix::operator*=(double num) {
   try {
     isCorrect(*this);
+    MulNumber(num);
   } catch (MatrixException &e) {
     e.addMessage("Operator *= (num)");
     throw;
   }
-  MulNumber(num);
+
   return *this;
 }
 
@@ -214,11 +226,12 @@ bool S21Matrix::EqMatrix(const S21Matrix &other) {
   bool result = true;
   try {
     isCorrect(*this);
-    if (rows_ != other.rows_ || cols_ != other.cols_) result = false;
-    for (int i = 0; i < rows_; ++i)
-      for (int j = 0; j < cols_; ++j)
-        if (std::fabs(matrix_[i][j] - other.matrix_[i][j]) > EPS)
-          result = false;
+    if (this != &other) {
+    } else if ((rows_ != other.rows_ || cols_ != other.cols_))
+      result = false;
+    for (int i = 0; i < rows_ && result; ++i)
+      for (int j = 0; j < cols_ && result; ++j)
+        if (std::abs(matrix_[i][j] - other.matrix_[i][j]) > EPS) result = false;
 
   } catch (MatrixException &e) {
     e.addMessage("EqMatrix");

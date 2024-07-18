@@ -54,6 +54,5 @@ class S21Matrix {
   bool operator==(const S21Matrix &other);
   double &operator()(const int row, const int col);
 };
-std::ostream &operator<<(std::ostream &os, const S21Matrix &matrix);
 
 #endif  // S21_MATRIX_PLUS
