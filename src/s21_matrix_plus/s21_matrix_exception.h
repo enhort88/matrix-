@@ -10,7 +10,7 @@ class MatrixException : public std::exception {
 
  public:
   explicit MatrixException(const std::string &message);
-  void addMessage(const std::string &additionalMessage);
+  MatrixException &addMessage(const std::string &additionalMessage);
   const char *what() const noexcept override;
 };
 

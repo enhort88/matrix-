@@ -32,7 +32,7 @@ DIRFUNCTESTS=./tests
 DIRGENHTML=./genhtml
 DATE=$(shell date)
 
-all: $(STATICLIB)
+all: $(STATICLIB) test run_test gcov_report
 
 $(STATICLIB):
 	$(CC) -c $(CCFLAGS) $(BIN_CPP_FILES) 
@@ -45,7 +45,7 @@ try: $(STATICLIB) # временная цель !!!УДАЛИТЬ!!!
 	$(CC) ./*.o $(STATICLIB) $(LDLIBS) -o $(DIRBUILD)/$(APPNAME)
 	$(DIRBUILD)/$(APPNAME)
 	valgrind --trace-children=yes --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all $(DIRBUILD)/$(APPNAME) 2>>valtest.txt
-	grep -e "Command" -e "jump" -e "Y: " valgrep.txt| grep -v "Y: 0" | cat
+	grep -e "Command" -e "jump" -e "Y: " valtest.txt| grep -v "Y: 0" | cat
 
 
 test: $(STATICLIB)
@@ -55,12 +55,12 @@ test: $(STATICLIB)
 	mv -f *.o $(DIROBJ)/
 	mv -f *.gcno $(DIRGCOV)/
 	@echo
-	@echo -e "\033[31mFinded files for testing: $(TEST_FILENAME)_test.cpp\033[0m"
+	@echo -e "\033[32mFinded files for testing: $(TEST_FILENAME)_test.cpp\033[0m"
 	$(foreach file, $(TEST_FILENAME), $(CC) $(CCFLAGS) $(DIROBJ)/$(file).o $(DIROBJ)/$(file)_test.o $(STATICLIB) $(LDTESTLIBS) $(CHECKFLAGS) -o $(DIRFUNCTESTS)/$(file)_test;)
 
 run_test: test
 	@echo
-	$(foreach file, $(TEST_FILENAME),$(DIRFUNCTESTS)/$(file)_test; echo;)
+	$(foreach file, $(TEST_FILENAME),$(DIRFUNCTESTS)/$(file)_test || exit 1; echo;)
 
 gcov_report: run_test
 	mv -f *.gcda $(DIRGCOV)/

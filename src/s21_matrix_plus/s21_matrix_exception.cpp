@@ -3,10 +3,12 @@
 MatrixException::MatrixException(const std::string &message)
     : message_(message){};
 
-void MatrixException::addMessage(const std::string &additionalMessage) {
+MatrixException &MatrixException::addMessage(
+    const std::string &additionalMessage) {
   std::ostringstream oss;
   oss << message_ << " -> " << additionalMessage;
   message_ = oss.str();
+  return *this;
 }
 
 const char *MatrixException::what() const noexcept { return message_.c_str(); }

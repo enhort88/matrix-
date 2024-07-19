@@ -25,7 +25,9 @@ class S21Matrix {
   int get_cols() const;
   void set_rows(int rows);
   void set_cols(int cols);
-  void print() const;
+  void set_element(int row, int col, double value);
+  double get_element(int row, int col) const;
+  // void print() const;
 
   bool EqMatrix(const S21Matrix &other);
   void SumMatrix(const S21Matrix &other);

@@ -1,7 +1,6 @@
 #include "s21_matrix_exception.h"
 #include "s21_matrix_oop.h"
 
-// Конструкторы и деструктор
 S21Matrix::S21Matrix() : rows_(0), cols_(0) {}
 
 S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
@@ -23,13 +22,13 @@ S21Matrix::S21Matrix(S21Matrix &&other)
 
 S21Matrix::~S21Matrix() {}
 
-// Аксессоры и мутаторы
 int S21Matrix::get_rows() const { return rows_; }
 int S21Matrix::get_cols() const { return cols_; }
 
 void S21Matrix::set_rows(int rows) {
   if (rows <= 0)
-    throw MatrixException("Number of rows must be greater than zero.");
+    throw MatrixException(
+        "set_rows : Number of rows must be greater than zero.");
   rows_ = rows;
   matrix_.resize(rows_);
   for (auto &row : matrix_) {
@@ -39,216 +38,159 @@ void S21Matrix::set_rows(int rows) {
 
 void S21Matrix::set_cols(int cols) {
   if (cols <= 0) {
-    throw MatrixException("Number of columns must be greater than zero.");
+    throw MatrixException(
+        "set_cols: Number of columns must be greater than zero.");
   }
   cols_ = cols;
   for (auto &row : matrix_) {
     row.resize(cols_, 0.0);
   }
 }
-
-void S21Matrix::print() const {
-  for (int i = 0; i < rows_; ++i) {
-    for (int j = 0; j < cols_; ++j) {
-      std::cout << matrix_[i][j] << " ";
-    }
-    std::cout << std::endl;
+void S21Matrix::set_element(int row, int col, double value) {
+  if (row < 0 || row >= rows_ || col < 0 || col >= cols_) {
+    throw MatrixException("set_element: Index out of range");
   }
+  matrix_[row][col] = value;
 }
 
-// Операции с матрицами
+double S21Matrix::get_element(int row, int col) const {
+  if (row < 0 || row >= rows_ || col < 0 || col >= cols_) {
+    throw MatrixException("get_element: Index out of range");
+  }
+  return matrix_[row][col];
+}
+
+// void S21Matrix::print() const {
+//   for (int i = 0; i < rows_; ++i) {
+//     for (int j = 0; j < cols_; ++j) {
+//       std::cout << matrix_[i][j] << " ";
+//     }
+//     std::cout << std::endl;
+//   }
+// }
+
 S21Matrix S21Matrix::operator+(const S21Matrix &other) {
   S21Matrix result(*this);
-  try {
-    isCorrect(*this);
-    isCorrect(other);
-    result.SumMatrix(other);
-  } catch (MatrixException &e) {
-    e.addMessage("Operator +");
-    throw;
-  }
+  isCorrect(*this);
+  isCorrect(other);
+  result.SumMatrix(other);
   return result;
 }
 
 S21Matrix S21Matrix::operator-(const S21Matrix &other) {
   S21Matrix result(*this);
-  try {
-    isCorrect(*this);
-    isCorrect(other);
-    result.SubMatrix(other);
-  } catch (MatrixException &e) {
-    e.addMessage("Operator -");
-    throw;
-  }
+  isCorrect(*this);
+  isCorrect(other);
+  result.SubMatrix(other);
   return result;
 }
 
 S21Matrix S21Matrix::operator*(const S21Matrix &other) {
   S21Matrix result(*this);
-  try {
-    isCorrect(*this);
-    isCorrect(other);
-    result.MulMatrix(other);
-  } catch (MatrixException &e) {
-    e.addMessage("Operator * (matrix)");
-    throw;
-  }
   if (cols_ != other.rows_) {
     throw MatrixException(
-        "Matrices dimensions do not match for multiplication.");
+        "Operator *:Matrices dimensions do not match for multiplication.");
   }
-  // S21Matrix temp(other);
-  // for (int i = 0; i < rows_; ++i)
-  //   for (int j = 0; j < other.cols_; ++j)
-  //     for (int k = 0; k < cols_; ++k)
-  //       result(i, j) += matrix_[i][k] * temp(k, j);
+  isCorrect(*this);
+  isCorrect(other);
+  result.MulMatrix(other);
   return result;
 }
 
 S21Matrix S21Matrix::operator*(double num) {
   S21Matrix result(*this);
-  try {
-    isCorrect(*this);
-    result.MulNumber(num);
-  } catch (MatrixException &e) {
-    e.addMessage("Operator * (num)");
-    throw;
-  }
+  isCorrect(*this);
+  result.MulNumber(num);
   return result;
 }
 
 bool S21Matrix::operator==(const S21Matrix &other) { return EqMatrix(other); }
 
 S21Matrix &S21Matrix::operator=(S21Matrix &&other) {
-  try {
-    isCorrect(*this);
-    isCorrect(other);
-    if (this != &other) {
-      rows_ = other.rows_;
-      cols_ = other.cols_;
-      matrix_ = std::move(other.matrix_);
-      other.rows_ = 0;
-      other.cols_ = 0;
-    }
-  } catch (MatrixException &e) {
-    e.addMessage("Operator = (move)");
-    throw;
+  isCorrect(*this);
+  isCorrect(other);
+  if (this != &other) {
+    rows_ = other.rows_;
+    cols_ = other.cols_;
+    matrix_ = std::move(other.matrix_);
+    other.rows_ = 0;
+    other.cols_ = 0;
   }
   return *this;
 }
 S21Matrix &S21Matrix::operator=(const S21Matrix &other) {
-  try {
-    isCorrect(*this);
-    isCorrect(other);
-    if (this != &other) {
-      rows_ = other.rows_;
-      cols_ = other.cols_;
-      matrix_ = other.matrix_;
-    }
-  } catch (MatrixException &e) {
-    e.addMessage("Operator = (copy)");
-    throw;
+  isCorrect(*this);
+  isCorrect(other);
+  if (this != &other) {
+    rows_ = other.rows_;
+    cols_ = other.cols_;
+    matrix_ = other.matrix_;
   }
   return *this;
 }
 
 S21Matrix &S21Matrix::operator+=(const S21Matrix &other) {
-  try {
-    isCorrect(*this);
-    isCorrect(other);
-    SumMatrix(other);
-  } catch (MatrixException &e) {
-    e.addMessage("Operator +=");
-    throw;
-  }
-
+  isCorrect(*this);
+  isCorrect(other);
+  SumMatrix(other);
   return *this;
 }
 
 S21Matrix &S21Matrix::operator-=(const S21Matrix &other) {
-  try {
-    isCorrect(*this);
-    isCorrect(other);
-    SubMatrix(other);
-
-  } catch (MatrixException &e) {
-    e.addMessage("Operator -=");
-    throw;
-  }
+  isCorrect(*this);
+  isCorrect(other);
+  SubMatrix(other);
   return *this;
 }
 
 S21Matrix &S21Matrix::operator*=(const S21Matrix &other) {
-  try {
-    isCorrect(*this);
-    isCorrect(other);
-    *this = *this * other;
-  } catch (MatrixException &e) {
-    e.addMessage("Operator *= (matrix)");
-    throw;
-  }
+  isCorrect(*this);
+  isCorrect(other);
+  *this = *this * other;
   return *this;
 }
 
 S21Matrix &S21Matrix::operator*=(double num) {
-  try {
-    isCorrect(*this);
-    MulNumber(num);
-  } catch (MatrixException &e) {
-    e.addMessage("Operator *= (num)");
-    throw;
-  }
-
+  isCorrect(*this);
+  MulNumber(num);
   return *this;
 }
 
 double &S21Matrix::operator()(int i, int j) {
-  try {
-    isCorrect(*this);
-  } catch (MatrixException &e) {
-    e.addMessage("Operator ()");
-    throw;
-  }
+  isCorrect(*this);
   if (i < 0 || i >= rows_ || j < 0 || j >= cols_)
-    throw MatrixException("Index out of bounds.");
+    throw MatrixException("Operator(): Index out of bounds.");
 
   return matrix_[i][j];
 }
 
-// Вспомогательные функции
 void S21Matrix::isCorrect(const S21Matrix &other) {
-  if (other.matrix_.empty()) throw MatrixException("Matrix is empty");
+  if (other.matrix_.empty())
+    throw MatrixException("isCorrect: Matrix is empty");
   if (other.rows_ < 0 || other.cols_ < 0)
-    throw MatrixException("Matrix is incorect. Problem with rows/cols");
+    throw MatrixException(
+        "isCorrect: Matrix is incorect. Problem with rows/cols");
 }
 
 bool S21Matrix::EqMatrix(const S21Matrix &other) {
   bool result = true;
-  try {
-    isCorrect(*this);
-    if (this != &other) {
-    } else if ((rows_ != other.rows_ || cols_ != other.cols_))
-      result = false;
+  isCorrect(*this);
+  if (this == &other) {
+  } else if ((rows_ != other.rows_ || cols_ != other.cols_)) {
+    result = false;
+  } else
     for (int i = 0; i < rows_ && result; ++i)
       for (int j = 0; j < cols_ && result; ++j)
         if (std::abs(matrix_[i][j] - other.matrix_[i][j]) > EPS) result = false;
 
-  } catch (MatrixException &e) {
-    e.addMessage("EqMatrix");
-    throw;
-  }
   return result;
 }
 
 void S21Matrix::SumMatrix(const S21Matrix &other) {
-  try {
-    isCorrect(*this);
-  } catch (MatrixException &e) {
-    e.addMessage("SumMatrix");
-    throw;
-  }
+  isCorrect(*this);
   if (rows_ != other.rows_ || cols_ != other.cols_)
-    throw MatrixException("Matrices dimensions do not match for addition.");
+    throw MatrixException(
+        "SumMatrix: Matrices dimensions do not match for addition.");
 
   for (int i = 0; i < rows_; ++i) {
     for (int j = 0; j < cols_; ++j) {
@@ -258,16 +200,10 @@ void S21Matrix::SumMatrix(const S21Matrix &other) {
 }
 
 void S21Matrix::SubMatrix(const S21Matrix &other) {
-  try {
-    isCorrect(*this);
-    if (rows_ != other.rows_ || cols_ != other.cols_)
-      throw MatrixException(
-          "Matrices dimensions do not match for subtraction.");
-  } catch (MatrixException &e) {
-    e.addMessage("SubMatrix");
-    throw;
-  }
-
+  isCorrect(*this);
+  if (rows_ != other.rows_ || cols_ != other.cols_)
+    throw MatrixException(
+        "SubMatrix: Matrices dimensions do not match for subtraction.");
   for (int i = 0; i < rows_; ++i) {
     for (int j = 0; j < cols_; ++j) {
       matrix_[i][j] -= other.matrix_[i][j];
@@ -276,36 +212,34 @@ void S21Matrix::SubMatrix(const S21Matrix &other) {
 }
 
 void S21Matrix::MulMatrix(const S21Matrix &other) {
-  try {
-    isCorrect(*this);
-    *this = *this * other;
-  } catch (MatrixException &e) {
-    e.addMessage("Mul Matrix");
-    throw;
+  if (this->cols_ != other.rows_) {
+    throw MatrixException(
+        "MulMatrix: Matrices dimensions do not match for multiplication.");
   }
+  isCorrect(*this);
+  S21Matrix result(this->rows_, other.cols_);
+  for (int i = 0; i < this->rows_; ++i) {
+    for (int j = 0; j < other.cols_; ++j) {
+      result.matrix_[i][j] = 0;
+      for (int k = 0; k < this->cols_; ++k) {
+        result.matrix_[i][j] += this->matrix_[i][k] * other.matrix_[k][j];
+      }
+    }
+  }
+  *this = result;
 }
 
 void S21Matrix::MulNumber(double num) {
-  try {
-    isCorrect(*this);
-  } catch (MatrixException &e) {
-    e.addMessage("Mul Number");
-    throw;
-  }
+  isCorrect(*this);
   for (int i = 0; i < rows_; ++i)
     for (int j = 0; j < cols_; ++j) matrix_[i][j] *= num;
 }
 
 void S21Matrix::Minor(S21Matrix &minor, int r, int c) {
-  try {
-    isCorrect(*this);
-  } catch (MatrixException &e) {
-    e.addMessage("Minor");
-    throw;
-  }
+  isCorrect(*this);
   if (rows_ <= 1 || cols_ <= 1)
     throw MatrixException(
-        "Matrix dimensions must be greater than 1 for minors.");
+        "Minor: Matrix dimensions must be greater than 1 for minors.");
   int m = rows_ - 1;
   int n = cols_ - 1;
   minor.set_rows(m);
@@ -320,38 +254,29 @@ void S21Matrix::Minor(S21Matrix &minor, int r, int c) {
 }
 
 double S21Matrix::Determinant() {
-  try {
-    isCorrect(*this);
-  } catch (MatrixException &e) {
-    e.addMessage("Determinante");
-    throw;
-  }
+  isCorrect(*this);
   double result = 0.0;
   if (rows_ != cols_)
-    throw MatrixException("Matrix must be square to compute determinant.");
-
+    throw MatrixException(
+        "Determinant: Matrix must be square to compute determinant.");
   if (rows_ == 1) {
-    return matrix_[0][0];
+    result = matrix_[0][0];
   } else if (rows_ == 2) {
-    return matrix_[0][0] * matrix_[1][1] - matrix_[0][1] * matrix_[1][0];
+    result = matrix_[0][0] * matrix_[1][1] - matrix_[0][1] * matrix_[1][0];
   } else {
     for (int i = 0; i < cols_; ++i) {
       S21Matrix minor(rows_ - 1, cols_ - 1);
       Minor(minor, 0, i);
       result += matrix_[0][i] * minor.Determinant() * (i % 2 == 0 ? 1 : -1);
     }
-    return result;
   }
+  return result;
 }
 S21Matrix S21Matrix::CalcComplements() {
-  try {
-    isCorrect(*this);
-  } catch (MatrixException &e) {
-    e.addMessage("CalcComplements");
-    throw;
-  }
+  isCorrect(*this);
   if (rows_ != cols_) {
-    throw MatrixException("Matrix must be square to compute complements.");
+    throw MatrixException(
+        "CalcComplements: Matrix must be square to compute complements.");
   }
   S21Matrix result(rows_, cols_);
   if (rows_ == 1) {
@@ -369,12 +294,7 @@ S21Matrix S21Matrix::CalcComplements() {
   return result;
 }
 S21Matrix S21Matrix::Transpose() {
-  try {
-    isCorrect(*this);
-  } catch (MatrixException &e) {
-    e.addMessage("Transpose");
-    throw;
-  }
+  isCorrect(*this);
   S21Matrix result(cols_, rows_);
   for (int i = 0; i < rows_; ++i) {
     for (int j = 0; j < cols_; ++j) {
@@ -384,19 +304,16 @@ S21Matrix S21Matrix::Transpose() {
   return result;
 }
 S21Matrix S21Matrix::InverseMatrix() {
-  try {
-    isCorrect(*this);
-  } catch (MatrixException &e) {
-    e.addMessage("InverseMatrix");
-    throw;
-  }
+  isCorrect(*this);
   if (rows_ != cols_) {
-    throw MatrixException("Matrix must be square to compute the inverse.");
+    throw MatrixException(
+        "InverseMatrix: Matrix must be square to compute the inverse.");
   }
   double det = Determinant();
   if (fabs(det) < 1e-7) {
     throw MatrixException(
-        "Matrix determinant is zero, the matrix is not invertible.");
+        "InverseMatrix: Matrix determinant is 0, the matrix is not "
+        "invertible.");
   }
   S21Matrix complements = CalcComplements();
   S21Matrix transposed = complements.Transpose();
