@@ -29,10 +29,19 @@ TEST(S21MatrixTest, CopyConstructor) {
 }
 
 TEST(S21MatrixTest, MoveConstructor) {
-  S21Matrix m1(3, 4);
+  S21Matrix m1(2, 2);
+  m1.set_element(0,0,1);
+  m1.set_element(0,1,1);
+  m1.set_element(1,0,1);
+  m1.set_element(1,1,1);
   S21Matrix m2(std::move(m1));
-  EXPECT_EQ(m2.get_rows(), 3);
-  EXPECT_EQ(m2.get_cols(), 4);
+  EXPECT_EQ(m2.get_rows(), 2);
+  EXPECT_EQ(m2.get_cols(), 2);
+  EXPECT_EQ(m2.get_element(0,0), 1);
+  EXPECT_EQ(m2.get_element(0,1), 1);
+  EXPECT_EQ(m2.get_element(1,0), 1);
+  EXPECT_EQ(m2.get_element(1,1), 1);
+
   EXPECT_EQ(m1.get_rows(), 0);
   EXPECT_EQ(m1.get_cols(), 0);
 }
@@ -161,6 +170,11 @@ TEST(S21MatrixTest, OperatorMultiplyMatrixExeption) {
   S21Matrix m1(2, 3);
   S21Matrix m2(2, 2);
   EXPECT_THROW(m1 * m2, MatrixException);
+}// * Exception
+TEST(S21MatrixTest, InvalidDimensionMultiplyMatrix) {
+  S21Matrix m1(2, 2);
+  S21Matrix m2(1, 1);
+  EXPECT_THROW(m1.MulMatrix(m2), MatrixException);
 }
 // == 1
 TEST(S21MatrixTest, OperatorEqual1) {
@@ -252,6 +266,19 @@ TEST(S21MatrixTest, OperatorParentheses) {
   m1(0, 0) = 3.0;
   EXPECT_EQ(m1(0, 0), 3.0);
 }
+// () exception
+TEST(S21MatrixTest, InvalidOperatorParentheses) {
+  S21Matrix m1(2, 2);
+  EXPECT_THROW(m1(-3, 4), MatrixException);
+}
+//iscorrect exception
+TEST(S21MatrixTest, IsCorrectEmptyMatrix) {
+    S21Matrix empty_matrix;
+    EXPECT_THROW({
+        empty_matrix.isCorrect(empty_matrix);
+    }, MatrixException);
+}
+
 // Minor
 TEST(S21MatrixTest, Minor) {
   S21Matrix m1(3, 3);
@@ -271,6 +298,11 @@ TEST(S21MatrixTest, Minor) {
   EXPECT_EQ(minor.get_element(0, 1), 5.0);
   EXPECT_EQ(minor.get_element(1, 0), 0.0);
   EXPECT_EQ(minor.get_element(1, 1), 6.0);
+}
+TEST(S21MatrixTest, InvalidDimensionMinor) {
+  S21Matrix m1(1, 1);
+  S21Matrix m2(1, 1);
+  EXPECT_THROW(m1.Minor(m2,0,0), MatrixException);
 }
 
 // Transpose
@@ -312,6 +344,16 @@ TEST(S21MatrixTest, Determinant2) {
   double det = m.Determinant();
   EXPECT_EQ(det, 22.0);
 }
+// Determinant exception
+TEST(S21MatrixTest, InvalidDeterminantSquare) {
+  S21Matrix m1(3, 4);
+  EXPECT_THROW(m1.Determinant(), MatrixException);
+}
+// Calc exception
+TEST(S21MatrixTest, InvalidCalcComplementsSquare) {
+  S21Matrix m1(3, 4);
+  EXPECT_THROW(m1.CalcComplements(), MatrixException);
+}
 
 // Inverse
 TEST(S21MatrixTest, Inverse) {
@@ -327,7 +369,10 @@ TEST(S21MatrixTest, Inverse) {
   EXPECT_NEAR(result.get_element(1, 1), 0.4, 1e-9);
 }
 // Inverse exception
-
+TEST(S21MatrixTest, InvalidInverseSquare) {
+  S21Matrix m1(3, 4);
+  EXPECT_THROW(m1.InverseMatrix(), MatrixException);
+}
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

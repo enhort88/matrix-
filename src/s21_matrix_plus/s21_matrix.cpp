@@ -5,17 +5,20 @@ S21Matrix::S21Matrix() : rows_(0), cols_(0) {}
 
 S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
   if (rows <= 0 || cols <= 0)
-    throw MatrixException("Matrix cols/rows out of range");
+    throw MatrixException("Constructor: Matrix cols/rows out of range");
   matrix_.resize(rows_, std::vector<double>(cols_, 0.0));
 }
 
 S21Matrix::S21Matrix(const S21Matrix &other)
-    : rows_(other.rows_), cols_(other.cols_), matrix_(other.matrix_) {}
+    : rows_(other.rows_), cols_(other.cols_), matrix_(other.matrix_) {
+      isCorrect(*this);
+    }
 
 S21Matrix::S21Matrix(S21Matrix &&other)
     : rows_(other.rows_),
       cols_(other.cols_),
       matrix_(std::move(other.matrix_)) {
+      isCorrect(*this);
   other.rows_ = 0;
   other.cols_ = 0;
 }
@@ -60,15 +63,6 @@ double S21Matrix::get_element(int row, int col) const {
   return matrix_[row][col];
 }
 
-// void S21Matrix::print() const {
-//   for (int i = 0; i < rows_; ++i) {
-//     for (int j = 0; j < cols_; ++j) {
-//       std::cout << matrix_[i][j] << " ";
-//     }
-//     std::cout << std::endl;
-//   }
-// }
-
 S21Matrix S21Matrix::operator+(const S21Matrix &other) {
   S21Matrix result(*this);
   isCorrect(*this);
@@ -107,7 +101,6 @@ S21Matrix S21Matrix::operator*(double num) {
 bool S21Matrix::operator==(const S21Matrix &other) { return EqMatrix(other); }
 
 S21Matrix &S21Matrix::operator=(S21Matrix &&other) {
-  isCorrect(*this);
   isCorrect(other);
   if (this != &other) {
     rows_ = other.rows_;
@@ -119,7 +112,6 @@ S21Matrix &S21Matrix::operator=(S21Matrix &&other) {
   return *this;
 }
 S21Matrix &S21Matrix::operator=(const S21Matrix &other) {
-  isCorrect(*this);
   isCorrect(other);
   if (this != &other) {
     rows_ = other.rows_;
@@ -320,3 +312,12 @@ S21Matrix S21Matrix::InverseMatrix() {
   S21Matrix inverse = transposed * (1.0 / det);
   return inverse;
 }
+
+// void S21Matrix::print() const {
+//   for (int i = 0; i < rows_; ++i) {
+//     for (int j = 0; j < cols_; ++j) {
+//       std::cout << matrix_[i][j] << " ";
+//     }
+//     std::cout << std::endl;
+//   }
+// }
