@@ -30,17 +30,17 @@ TEST(S21MatrixTest, CopyConstructor) {
 
 TEST(S21MatrixTest, MoveConstructor) {
   S21Matrix m1(2, 2);
-  m1.set_element(0,0,1);
-  m1.set_element(0,1,1);
-  m1.set_element(1,0,1);
-  m1.set_element(1,1,1);
+  m1.set_element(0, 0, 1);
+  m1.set_element(0, 1, 1);
+  m1.set_element(1, 0, 1);
+  m1.set_element(1, 1, 1);
   S21Matrix m2(std::move(m1));
   EXPECT_EQ(m2.get_rows(), 2);
   EXPECT_EQ(m2.get_cols(), 2);
-  EXPECT_EQ(m2.get_element(0,0), 1);
-  EXPECT_EQ(m2.get_element(0,1), 1);
-  EXPECT_EQ(m2.get_element(1,0), 1);
-  EXPECT_EQ(m2.get_element(1,1), 1);
+  EXPECT_EQ(m2.get_element(0, 0), 1);
+  EXPECT_EQ(m2.get_element(0, 1), 1);
+  EXPECT_EQ(m2.get_element(1, 0), 1);
+  EXPECT_EQ(m2.get_element(1, 1), 1);
 
   EXPECT_EQ(m1.get_rows(), 0);
   EXPECT_EQ(m1.get_cols(), 0);
@@ -170,7 +170,7 @@ TEST(S21MatrixTest, OperatorMultiplyMatrixExeption) {
   S21Matrix m1(2, 3);
   S21Matrix m2(2, 2);
   EXPECT_THROW(m1 * m2, MatrixException);
-}// * Exception
+}  // * Exception
 TEST(S21MatrixTest, InvalidDimensionMultiplyMatrix) {
   S21Matrix m1(2, 2);
   S21Matrix m2(1, 1);
@@ -271,12 +271,10 @@ TEST(S21MatrixTest, InvalidOperatorParentheses) {
   S21Matrix m1(2, 2);
   EXPECT_THROW(m1(-3, 4), MatrixException);
 }
-//iscorrect exception
+// iscorrect exception
 TEST(S21MatrixTest, IsCorrectEmptyMatrix) {
-    S21Matrix empty_matrix;
-    EXPECT_THROW({
-        empty_matrix.isCorrect(empty_matrix);
-    }, MatrixException);
+  S21Matrix empty_matrix;
+  EXPECT_THROW({ empty_matrix.isCorrect(empty_matrix); }, MatrixException);
 }
 
 // Minor
@@ -302,7 +300,7 @@ TEST(S21MatrixTest, Minor) {
 TEST(S21MatrixTest, InvalidDimensionMinor) {
   S21Matrix m1(1, 1);
   S21Matrix m2(1, 1);
-  EXPECT_THROW(m1.Minor(m2,0,0), MatrixException);
+  EXPECT_THROW(m1.Minor(m2, 0, 0), MatrixException);
 }
 
 // Transpose

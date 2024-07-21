@@ -11,14 +11,14 @@ S21Matrix::S21Matrix(int rows, int cols) : rows_(rows), cols_(cols) {
 
 S21Matrix::S21Matrix(const S21Matrix &other)
     : rows_(other.rows_), cols_(other.cols_), matrix_(other.matrix_) {
-      isCorrect(*this);
-    }
+  isCorrect(*this);
+}
 
 S21Matrix::S21Matrix(S21Matrix &&other)
     : rows_(other.rows_),
       cols_(other.cols_),
       matrix_(std::move(other.matrix_)) {
-      isCorrect(*this);
+  isCorrect(*this);
   other.rows_ = 0;
   other.cols_ = 0;
 }
@@ -83,7 +83,7 @@ S21Matrix S21Matrix::operator*(const S21Matrix &other) {
   S21Matrix result(*this);
   if (cols_ != other.rows_) {
     throw MatrixException(
-        "Operator *:Matrices dimensions do not match for multiplication.");
+        "Operator*: Matrices dimensions do not match for multiplication.");
   }
   isCorrect(*this);
   isCorrect(other);

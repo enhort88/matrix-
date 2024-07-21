@@ -63,16 +63,16 @@ int main() {
     //   std::cout << "Inverse matrix:\n";
     //   inverse.print();
 
-  // S21Matrix m1(3, 3);
-  // m1.set_element(0,0,1);
-  // m1.set_element(0,1,1);
-  // m1.set_element(1,0,1);
-  // m1.set_element(1,1,1);
-  // std::cout <<"m1 \n";
-  // m1.print();
-  // S21Matrix m2(std::move(m1));
-  // std::cout <<"\nm2 ";
-  // m2.print();
+    // S21Matrix m1(3, 3);
+    // m1.set_element(0,0,1);
+    // m1.set_element(0,1,1);
+    // m1.set_element(1,0,1);
+    // m1.set_element(1,1,1);
+    // std::cout <<"m1 \n";
+    // m1.print();
+    // S21Matrix m2(std::move(m1));
+    // std::cout <<"\nm2 ";
+    // m2.print();
 
   } catch (const MatrixException &err) {
     res = 11;

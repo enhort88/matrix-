@@ -103,7 +103,7 @@ clean:
 
 rebuild: clean all
 
-pushing_to_git:
+pushing_to_git: check
 	git add .
 	git commit -m "$(DATE)"
 	git push origin develop
